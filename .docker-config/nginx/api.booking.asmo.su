@@ -1,0 +1,33 @@
+# rm -f /etc/nginx/sites-enabled/default
+# rm -f /etc/nginx/sites-enabled/api.booking.asmo.su
+# sudo cp -f .docker-config/nginx/api.booking.asmo.su /etc/nginx/sites-available/api.booking.asmo.su
+# sudo ln -s /etc/nginx/sites-available/api.booking.asmo.su /etc/nginx/sites-enabled/api.booking.asmo.su
+# sudo nginx -t && sudo nginx -s reload
+# cd /etc/nginx/sites-available/
+
+upstream api-booking-asmo-su {
+    server localhost:8252 max_fails=5 fail_timeout=60s;
+}
+
+# for serving correct path to files from drf filefield
+proxy_set_header Host api.booking.asmo.su;
+proxy_set_header X-forwarded-for $proxy_add_x_forwarded_for;
+
+server {
+    gzip on;
+    gzip_disable "msie6";
+    gzip_min_length 1000;
+
+    server_name api.booking.asmo.su www.api.booking.asmo.su;
+    
+    # security
+    add_header Referrer-Policy "strict-origin";
+    add_header X-Content-Type-Options nosniff;
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-XSS-Protection "1; mode=block";
+    add_header Strict-Transport-Security 'max-age=31536000; includeSubDomains; preload';
+
+    location / {
+        proxy_pass http://api-booking-asmo-su/;
+    }
+}
