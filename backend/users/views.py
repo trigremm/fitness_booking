@@ -76,7 +76,7 @@ class AnonymousUserViewSet(ViewSet):
     )
     def user_reset_password(self, request):
         """generate a pasword recovery link and send to email"""
-        data = request.data.dict()
+        data = request.data
         serializer = UserResetPasswordSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         try:
