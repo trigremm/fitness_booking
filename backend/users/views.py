@@ -19,7 +19,6 @@ from .serializers import (
     UserResetPasswordSerializer,
     UserRetrieveUpdateProfileSerializer,
 )
-from .signals import user_activated_signal, user_password_reset_signal
 
 
 class AnonymousUserViewSet(ViewSet):
@@ -43,10 +42,10 @@ class AnonymousUserViewSet(ViewSet):
     @extend_schema(
         request=UserActivationSerializer,
         responses={200: UserActivationSerializer},
-        methods=["POST"],
+        methods=["GET"],
     )
     def user_activation(self, request):
-        data = request.data
+        data = request.query_params
         serializer = UserActivationSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         try:

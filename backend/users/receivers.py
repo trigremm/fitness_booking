@@ -39,23 +39,27 @@ def user_post_save_receiver(sender, instance, created, *args, **kwargs):  # pyli
             )
 
 
-# @receiver(user_password_reset_signal, sender=User)
-# def user_password_reset_receiver(sender, user, *args, **kwargs):  # pylint: disable=unused-argument
-#     """
-#     after forgot email button pressed
-#     """
+@receiver(user_password_reset_signal, sender=User)
+def user_password_reset_receiver(sender, user, *args, **kwargs):  # pylint: disable=unused-argument
+    """
+    after forgot email button pressed
+    """
 
-#     logger.info("PASSWORD_RECOVERY email enqueueing")
-#     url = settings.FRONTEND_URL
-
-#     password_link = url.rstrip("/") + "/forgot-password?token=" + user.token
-#     context = {
-#         "email": user.email,
-#         "name": user.full_name,
-#         "password_link": password_link,
-#     }
-#     shared_task_send_email_password_recovery.delay(context)
-#     logger.info("PASSWORD_RECOVERY email is sent")
+    logger.info("PASSWORD_RECOVERY email enqueueing")
+    url = settings.FRONTEND_URL
+    reset_password_url = f"{url}/reset-password/?token={user.token}"
+    context = {
+        "subject": "reset acccount password",
+        "message": f"reset your account password  by clicking on the link below\n\n{reset_password_url}",
+        "email_to": user.email,
+    }
+    try:
+        send_simple_email(context)
+        logger.info("PASSWORD_RECOVERY email is sent")
+    except Exception as error:  # pylint: disable=broad-except
+        logger.error(  # pylint: disable=logging-fstring-interpolation
+            f"PASSWORD_RECOVERY email is not sent, {context=} {error=}"
+        )
 
 
 # @receiver(user_password_changed_signal, sender=User)

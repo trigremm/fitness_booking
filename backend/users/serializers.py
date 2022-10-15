@@ -57,6 +57,7 @@ class UserActivationSerializer(serializers.ModelSerializer):
         return attrs
 
     def save(self, **kwargs):  # pylint: disable=unused-argument
+        # TODO move to model manager
         token = self.validated_data.get("token")
         instance = User.objects.filter(token=token).first()
         instance.is_active = True
@@ -74,6 +75,7 @@ class UserForgotPasswordSerializer(serializers.ModelSerializer):
         fields = ["email"]
 
     def save(self, **kwargs):  # pylint: disable=unused-argument
+        # TODO move to model manager
         email = self.validated_data.get("email")
         instance = User.objects.get(email=email)
         instance.token = instance.generate_token()
