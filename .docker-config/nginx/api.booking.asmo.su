@@ -1,12 +1,12 @@
-# rm -f /etc/nginx/sites-enabled/default
-# rm -f /etc/nginx/sites-enabled/api.booking.asmo.su
+# sudo rm -f /etc/nginx/sites-enabled/default
+# sudo rm -f /etc/nginx/sites-enabled/api.booking.asmo.su
 # sudo cp -f .docker-config/nginx/api.booking.asmo.su /etc/nginx/sites-available/api.booking.asmo.su
 # sudo ln -s /etc/nginx/sites-available/api.booking.asmo.su /etc/nginx/sites-enabled/api.booking.asmo.su
 # sudo nginx -t && sudo nginx -s reload
 # cd /etc/nginx/sites-available/
 
 upstream api-booking-asmo-su {
-    server localhost:8252 max_fails=5 fail_timeout=60s;
+    server localhost:8531 max_fails=5 fail_timeout=60s;
 }
 
 # for serving correct path to files from drf filefield

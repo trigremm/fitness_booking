@@ -1,5 +1,6 @@
 allocate server 
 install docker-compose
+install nginx
 allocate database
 
 create mail account 
