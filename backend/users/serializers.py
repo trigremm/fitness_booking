@@ -86,15 +86,32 @@ class UserForgotPasswordSerializer(serializers.ModelSerializer):
 
 
 class UserResetPasswordSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(required=True, write_only=True)
+    token = serializers.CharField(required=True)
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    password_confirmation = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = User
-        fields = ["email"]
+        fields = ("token", "password", "password_confirmation")
+
+    def validate(self, attrs):
+        if User.objects.filter(token=attrs["token"]).exists() is False:
+            raise serializers.ValidationError({"Token": "Token not found"})
+        if attrs["password"] != attrs["password_confirmation"]:
+            raise serializers.ValidationError({"password": "Password fields didn't match."})
+        return attrs
 
     def save(self, **kwargs):  # pylint: disable=unused-argument
-        email = self.validated_data.get("email")
-        return User.objects.user_password_reset(email)
+        # TODO move to model manager
+        token = self.validated_data.get("token")
+        password = self.validated_data.get("password")
+        instance = User.objects.filter(token=token).first()
+        instance.token = ""
+        instance.is_active = True
+        instance.set_password(password)
+        instance.save()
+        # user_password_reset_signal.send(sender=instance.__class__, user=instance)
+        return instance
 
 
 class CurrentUserSerializer(serializers.ModelSerializer):
