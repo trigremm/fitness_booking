@@ -1,0 +1,6 @@
+allocate server 
+install docker-compose
+allocate database
+
+create mail account 
+

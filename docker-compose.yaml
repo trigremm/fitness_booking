@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - .env.backend
+    ports:
+      - "8531:8000"
+    volumes:
+      - ./backend:/app/
+      - ./.docker-storage/backend/static:/app/static/
+      - ./.docker-storage/backend/media:/app/media/
+
+  redis:
+    image: redis:alpine
+    platform: linux/amd64
+    restart: always
+
+  celery:
+    build:
+      context: ./backend/
+    command: celery -A core worker -l info
+    depends_on:
+      - redis
+      - backend
+    env_file:
+      - .env.backend
+    restart: always
+    volumes:
+      - ./backend:/app/
+      - ./.docker-storage/backend/static:/app/static/
+      - ./.docker-storage/backend/media:/app/media/

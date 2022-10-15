@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "fitness-booking-backend"
+version = "0.1.0"
+description = ""
+authors = ["Molkenov Askhat <askhat.molkenov@gmail.com>"]
+readme = "README.md"
+packages = [{include = "fitness_booking_backend"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+django = "<4"
+djangorestframework = "^3.14.0"
+djangorestframework-simplejwt = "^5.2.1"
+django-cors-headers = "^3.13.0"
+uvicorn = "^0.18.3"
+gunicorn = "^20.1.0"
+drf-spectacular = "^0.24.2"
+django-filter = "^22.1"
+mysqlclient = "^2.1.1"
+celery = "^5.2.7"
+drf-spectacular-sidecar = "^2022.10.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

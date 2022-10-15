@@ -1,0 +1,7 @@
+.env
+.env.backend
+.docker-storage
+*.pyc
+static/
+media/
+db.sqlite3
