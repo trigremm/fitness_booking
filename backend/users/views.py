@@ -81,7 +81,7 @@ class AnonymousUserViewSet(ViewSet):
         serializer.is_valid(raise_exception=True)
         try:
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:  # pylint: disable=invalid-name, broad-except
             return Response({"details": e.args}, status=status.HTTP_400_BAD_REQUEST)
 
