@@ -1,4 +1,5 @@
 import logging
+import uuid
 
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
@@ -7,7 +8,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from users.signals import user_password_reset_signal, user_password_changed_signal
+from users.signals import user_password_changed_signal, user_password_reset_signal
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +24,8 @@ class UserManager(BaseUserManager):
             raise ValueError("User must have a password")
         user = User.objects.model(email=email, **extra_fields)
         user.set_password(password)  # change password to hash
-        user.token = user.generate_token(user)
+        user.token = user.generate_token()
+        user.token = str(uuid.uuid4()).replace("-", "")
         user.is_active = False
         user.save()
         return user

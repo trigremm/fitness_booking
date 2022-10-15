@@ -1,16 +1,13 @@
 import logging
 
+from django.conf import settings
 from django.contrib.auth.signals import user_logged_in, user_logged_out, user_login_failed
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from shared.utils import send_simple_email
 
 from .models import User
-from .signals import (
-    user_password_changed_signal,
-    user_password_reset_signal,
-)
-from shared.utils import send_simple_email
-from django.conf import settings
+from .signals import user_password_changed_signal, user_password_reset_signal
 
 FRONTEND_URL = settings.FRONTEND_URL
 logging.basicConfig(
@@ -21,12 +18,13 @@ logger = logging.getLogger(__name__)
 
 
 @receiver(post_save, sender=User)
-def user_post_save_receiver(sender, user, created, *args, **kwargs):  # pylint: disable=unused-argument
+def user_post_save_receiver(sender, instance, created, *args, **kwargs):  # pylint: disable=unused-argument
     """
     after saved in the database
     """
     if created:
-        activation_url = f"{FRONTEND_URL}/auth/activate/?token={user.token}"
+        user = instance
+        activation_url = f"{FRONTEND_URL}/activate/?token={user.token}"
         context = {
             "subject": "account successfully created",
             "message": f"account successfully created\n\nactivate your account by clicking on the link below\n\n{activation_url}",

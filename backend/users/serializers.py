@@ -1,5 +1,3 @@
-import uuid
-
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.tokens import default_token_generator
 from rest_framework import serializers
@@ -38,9 +36,9 @@ class UserRegisterationSerializer(serializers.ModelSerializer):
         validated_data["is_active"] = False
         validated_data["is_staff"] = False
         validated_data["is_superuser"] = False
-        validated_data["token"] = str(uuid.uuid4()).replace("-", "")
         email = validated_data.pop("email")
         password = validated_data.pop("password")
+        validated_data.pop("password_confirmation")
         user = User.objects.create_user(email, password, **validated_data)
         return user
 
