@@ -6,7 +6,7 @@ allocate database
 create mail account 
 
 sudo \
-docker-compose exec backend pip install ipython 
+docker-compose exec backend pip install ipython
 
 sudo \
 docker-compose exec backend python manage.py shell

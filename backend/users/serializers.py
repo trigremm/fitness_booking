@@ -7,6 +7,13 @@ from .models import User
 from .signals import user_activated_signal, user_password_reset_signal
 
 
+#  █████  ██    ██ ████████ ██   ██
+# ██   ██ ██    ██    ██    ██   ██
+# ███████ ██    ██    ██    ███████
+# ██   ██ ██    ██    ██    ██   ██
+# ██   ██  ██████     ██    ██   ██
+
+
 class UserRegisterationSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=User.objects.all())])
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
@@ -112,6 +119,13 @@ class UserResetPasswordSerializer(serializers.ModelSerializer):
         instance.save()
         # user_password_reset_signal.send(sender=instance.__class__, user=instance)
         return instance
+
+
+# ██████  ██████   ██████  ███████ ██ ██      ███████
+# ██   ██ ██   ██ ██    ██ ██      ██ ██      ██
+# ██████  ██████  ██    ██ █████   ██ ██      █████
+# ██      ██   ██ ██    ██ ██      ██ ██      ██
+# ██      ██   ██  ██████  ██      ██ ███████ ███████
 
 
 class CurrentUserSerializer(serializers.ModelSerializer):

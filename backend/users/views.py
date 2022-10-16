@@ -1,6 +1,6 @@
-import django_filters.rest_framework as filters
 from django.db.models import Q
 from django_filters import rest_framework as filters
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.filters import SearchFilter
@@ -21,6 +21,11 @@ from .serializers import (
 )
 
 
+#  █████  ██    ██ ████████ ██   ██
+# ██   ██ ██    ██    ██    ██   ██
+# ███████ ██    ██    ██    ███████
+# ██   ██ ██    ██    ██    ██   ██
+# ██   ██  ██████     ██    ██   ██
 class AnonymousUserViewSet(ViewSet):
     permission_classes = (AllowAny,)
 
@@ -89,6 +94,11 @@ class AnonymousUserViewSet(ViewSet):
         return Response("Not implemented", status=status.HTTP_501_NOT_IMPLEMENTED)
 
 
+# ██████  ██████   ██████  ███████ ██ ██      ███████
+# ██   ██ ██   ██ ██    ██ ██      ██ ██      ██
+# ██████  ██████  ██    ██ █████   ██ ██      █████
+# ██      ██   ██ ██    ██ ██      ██ ██      ██
+# ██      ██   ██  ██████  ██      ██ ███████ ███████
 class CurrentUserView(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = User.objects.filter(is_active=True, is_superuser=False)
@@ -105,6 +115,13 @@ class UserProfileAPIView(RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+# ██      ██ ███████ ████████
+# ██      ██ ██         ██
+# ██      ██ ███████    ██
+# ██      ██      ██    ██
+# ███████ ██ ███████    ██
 
 
 class UserSearchFilter(filters.FilterSet):
@@ -128,8 +145,10 @@ class UserListView(ListAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = User.objects.filter(is_active=True)
     serializer_class = CurrentUserSerializer
-    filter_backends = [SearchFilter]
-    search_fields = ["first_name", "last_name", "email"]
+    # filter_backends = [SearchFilter]
+    # filter_backends = [DjangoFilterBackend]
+    # filter_backends = [UserSearchFilter]
+    # filterset_fields = ("search",)
 
     def get_pagination_class(self):
         if "limit" in self.request.query_params:
