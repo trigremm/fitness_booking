@@ -21,7 +21,7 @@ RUN apt update \
 
 # app setup
 WORKDIR /app
-COPY . .
+COPY backend/ .
 
 # project dependencies
 RUN --mount=type=cache,target=/root/.cache pip install -U pip setuptools
