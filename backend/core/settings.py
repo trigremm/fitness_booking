@@ -92,11 +92,11 @@ WSGI_APPLICATION = "core.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": os.environ.get("DATABASE_NAME", "sample"),
-        "USER": os.environ.get("DATABASE_USER", "root"),
-        "PASSWORD": os.environ.get("DATABASE_PASSWORD", "MYSQL_ROOT_PASSWORD"),
         "HOST": os.environ.get("DATABASE_HOST", "127.0.0.1"),
         "PORT": os.environ.get("DATABASE_PORT", "3306"),
+        "USER": os.environ.get("DATABASE_USER", "root"),
+        "PASSWORD": os.environ.get("DATABASE_PASSWORD", "MYSQL_ROOT_PASSWORD"),
+        "NAME": os.environ.get("DATABASE_NAME", "sample"),
     }
 }
 
@@ -145,6 +145,8 @@ STATIC_ROOT = "/app/static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -189,5 +191,3 @@ SPECTACULAR_SETTINGS = {
     "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
     "REDOC_DIST": "SIDECAR",
 }
-
-FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
