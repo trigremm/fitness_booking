@@ -1,19 +1,27 @@
 import logging
+from collections import namedtuple
 from re import A
 
-from django.shortcuts import get_object_or_404
+from django.db import connection
 from django.utils import timezone
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import FitnessHallAppointments
+from .models import FitnessHall, FitnessHallAppointments
 from .serializers import (
     FitenessHallAppointmentCreateSerializer,
     FitenessHallAppointmentSerializer,
     FitnessHallLoadSerializer,
+    FitnessHallSerializer,
 )
+
+
+class FitnessHallListAPIView(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = FitnessHall.objects.all()
+    serializer_class = FitnessHallSerializer
 
 
 class FitnessHallAppointmenCreateApiView(CreateAPIView):
@@ -83,18 +91,28 @@ class FitnessHallLoadListAPIView(ListAPIView):
 
     def list(self, request, *args, **kwargs):
         """
-        get load for all fitness halls for today by hour and by fiteness_hall
+        write a django or sql command that will return agregated data for all fitness halls for today by hour and by fiteness_hall
+        in the followint format:
+        [{"fitness_hall": 1, "hour": 13, "load": 2}, {"fitness_hall": 1, "hour": 14, "load": 3}, {"fitness_hall": 2, "hour": 13, "load": 1}, {"fitness_hall": 2, "hour": 14, "load": 2}]
         """
+        SQL_select = """
+                SELECT fitness_hall_id, hour(appointment) , count(*), fitness_fitnesshall.name , fitness_fitnesshall.capacity
+                FROM fitness_fitnesshallappointments, fitness_fitnesshall
+                WHERE date(appointment) = CURRENT_DATE() and fitness_fitnesshall.id = fitness_fitnesshallappointments.fitness_hall_id
+                GROUP BY fitness_hall_id, hour(appointment)
+                ORDER BY fitness_hall_id, hour(appointment);
+            """
 
-        """
-        SELECT CAST(t_date_time_issued AS DATE), DATEPART(hour, t_date_time_issued), t_street_name, count(t_reference) 
-        FROM tickets 
-        WHERE t_date_time_issued BETWEEN '03/06/2015' AND '03/07/2015' 
-        AND t_street_name LIKE'%airport%'
-        GROUP BY t_street_name, t_reference, CAST(t_date_time_issued AS DATE), DATEPART(hour, t_date_time_issued)
-        ORDER BY t_date_time_issued
-        """
-        queryset = self.get_queryset().filter(appointment__date=timezone.now().date())
-        queryset = FitnessHallAppointments.objects.filter(appointment__date=timezone.now().date())
+        header = [
+            "fitness_hall_id",
+            "hour",
+            "load",
+            "name",
+            "capacity",
+        ]
 
-        return super().list(request, *args, **kwargs)
+        with connection.cursor() as cursor:
+            cursor.execute(SQL_select)
+            nt_result = namedtuple("Result", header)
+            data = [nt_result(*row)._asdict() for row in cursor.fetchall()]
+        return Response(data=data, status=status.HTTP_200_OK)

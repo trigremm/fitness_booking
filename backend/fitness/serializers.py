@@ -6,6 +6,12 @@ from rest_framework.validators import UniqueValidator
 from .models import User, FitnessHall, FitnessHallAppointments
 
 
+class FitnessHallSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FitnessHall
+        fields = ("id", "name", "capacity")
+
+
 class FitnessHallLoadSerializer(serializers.ModelSerializer):
     load = serializers.SerializerMethodField()
 
