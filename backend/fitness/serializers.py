@@ -21,6 +21,18 @@ class FitnessHallLoadSerializer(serializers.ModelSerializer):
 
 
 class FitenessHallAppointmentCreateSerializer(serializers.ModelSerializer):
+    """
+    data = {
+        "fitness_hall": 1,
+        "user" :3,
+        "appointment": "2021-05-01 13:00:00",
+    }
+    for i in data:
+        s = FitenessHallAppointmentCreateSerializer(data=i)
+        s.is_valid(raise_exception=True)
+        s.save()
+    """
+
     class Meta:
         model = FitnessHallAppointments
         fields = "__all__"
