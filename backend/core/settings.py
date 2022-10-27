@@ -12,10 +12,17 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import os
 from pathlib import Path
+import environ
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -92,14 +99,22 @@ WSGI_APPLICATION = "core.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": os.environ.get("DATABASE_NAME", "sample"),
+        "NAME": os.environ.get("DATABASE_NAME"),
+        "USER": os.environ.get("DATABASE_USER", "root"),
+        "PASSWORD": os.environ.get("DATABASE_PASSWORD", "MYSQL_ROOT_PASSWORD"),
+        "HOST": os.environ.get("DATABASE_HOST", "127.0.0.1"),
+        "PORT": os.environ.get("DATABASE_PORT", "3306"),
+    },
+    "test": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.environ.get("DATABASE_NAME"),
         "USER": os.environ.get("DATABASE_USER", "root"),
         "PASSWORD": os.environ.get("DATABASE_PASSWORD", "MYSQL_ROOT_PASSWORD"),
         "HOST": os.environ.get("DATABASE_HOST", "127.0.0.1"),
         "PORT": os.environ.get("DATABASE_PORT", "3306"),
     }
 }
-
+DATABASES["default"] = DATABASES[env("DATABASE_SELECTOR")]
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
