@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+
 import os
 from pathlib import Path
 import environ
@@ -206,3 +207,8 @@ SPECTACULAR_SETTINGS = {
 }
 
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
+
+REDIS_HOST = "redis" # Container name in docker-compose.yml
+REDIS_PORT = "6379"
+
+CELERY_BROKER_URL = os.environ.get('REDIS_URL', "redis://{host}:{port}/0".format(host=REDIS_HOST, port=REDIS_PORT))
