@@ -27,10 +27,6 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "DJANGO_SECRET_KEY")
 DEBUG = os.environ.get("DJANGO_DEBUG", "False").upper() == "TRUE"
 
 ALLOWED_HOSTS = ["*"]
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:8080",
-# ]
-CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
 
@@ -60,12 +56,21 @@ if DEBUG:
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "http://localhost:8000",
+    "https://localhost:8000",
+    "https://localhost:8080",
+]
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = "core.urls"
 
