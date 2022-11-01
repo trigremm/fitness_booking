@@ -71,6 +71,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://localhost:8080",
 ]
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ORIGIN_ALLOW_ALL = True
+X_FRAME_OPTIONS = "ALLOW-FROM localhost:8080 localhost:8000"
 
 ROOT_URLCONF = "core.urls"
 
