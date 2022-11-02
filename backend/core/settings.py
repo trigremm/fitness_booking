@@ -13,17 +13,11 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 from pathlib import Path
-import environ
 
-env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, False)
-)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -35,6 +29,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "DJANGO_SECRET_KEY")
 DEBUG = os.environ.get("DJANGO_DEBUG", "False").upper() == "TRUE"
 
 ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(",")
 
 # Application definition
 
@@ -72,15 +67,21 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000").strip("/")
+
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
+    "http://localhost:5000",
     "http://localhost:8000",
+    "http://localhost:8080",
+    "https://localhost:5000",
     "https://localhost:8000",
     "https://localhost:8080",
+    FRONTEND_URL,
 ]
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ORIGIN_ALLOW_ALL = True
-X_FRAME_OPTIONS = "ALLOW-FROM localhost:8080 localhost:8000"
+X_FRAME_OPTIONS = "ALLOW-FROM localhost:3000 localhost:5000 localhost:8000 localhost:8080"
+# X_FRAME_OPTIONS += f" {FRONTEND_URL.split('//')[-1]}:80 {FRONTEND_URL.split('//')[-1]}:443"
 
 ROOT_URLCONF = "core.urls"
 
@@ -108,22 +109,19 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
+        "ENGINE": os.environ.get("DATABASE_ENGINE"),
         "NAME": os.environ.get("DATABASE_NAME"),
-        "USER": os.environ.get("DATABASE_USER", "root"),
-        "PASSWORD": os.environ.get("DATABASE_PASSWORD", "MYSQL_ROOT_PASSWORD"),
-        "HOST": os.environ.get("DATABASE_HOST", "127.0.0.1"),
-        "PORT": os.environ.get("DATABASE_PORT", "3306"),
+        "USER": os.environ.get("DATABASE_USER"),
+        "PASSWORD": os.environ.get("DATABASE_PASSWORD"),
+        "HOST": os.environ.get("DATABASE_HOST"),
+        "PORT": os.environ.get("DATABASE_PORT"),
     },
     "test": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.environ.get("DATABASE_NAME"),
-        "USER": os.environ.get("DATABASE_USER", "root"),
-        "PASSWORD": os.environ.get("DATABASE_PASSWORD", "MYSQL_ROOT_PASSWORD"),
-        "NAME": os.environ.get("DATABASE_NAME", "sample"),
-    }
+        "NAME": "mydatabase",
+    },
 }
-DATABASES["default"] = DATABASES[env("DATABASE_SELECTOR")]
+DATABASES["default"] = DATABASES[os.environ.get("DATABASE_SELECTOR", "default")]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -175,7 +173,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ███████ ██   ██    ██    ██   ██ ██   ██
 ##########################################
 
-FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
@@ -198,9 +195,7 @@ SIMPLE_JWT = {
     "UPDATE_LAST_LOGIN": True,
 }
 
-
 # Email messaging using smtp
-
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = os.environ.get("EMAIL_HOST")
 EMAIL_PORT = os.environ.get("EMAIL_PORT")
@@ -210,7 +205,6 @@ EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
 
 # DRF Spectatular settings
 SPECTACULAR_SETTINGS = {
@@ -223,9 +217,4 @@ SPECTACULAR_SETTINGS = {
 }
 
 # Celery settings
-FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
-
-REDIS_HOST = "redis" # Container name in docker-compose.yml
-REDIS_PORT = "6379"
-
-CELERY_BROKER_URL = os.environ.get('REDIS_URL', "redis://{host}:{port}/0".format(host=REDIS_HOST, port=REDIS_PORT))
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://redis:6379")
