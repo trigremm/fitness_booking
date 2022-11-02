@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Use JavaScript to Change Text</h2>
+<p>This example writes "Hello JavaScript!" into an HTML element with id="demo":</p>
+
+<p id="demo"></p>
+
+<script>
+document.getElementById("demo").innerHTML = "Hello JavaScript!";
+</script> 
+
+<script>
+    let data = {"email":"qqq@asmo.su", "password":"11@@qqWW"};
+    fetch('https://api.booking.asmo.su/auth/login/',
+    {method:'POST', mode:'cors', credentials: 'same-origin',headers: {
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },body: JSON.stringify(data)})
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+      });
+</script> 
+
+<script>
+    fetch('https://api.booking.asmo.su/user/')
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+      });
+</script> 
+
+<script>
+    fetch('https://api.booking.asmo.su/schema/swagger-ui/')
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+      });
+</script> 
+
+</body>
+</html>
+
