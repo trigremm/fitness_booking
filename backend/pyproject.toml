@@ -17,9 +17,11 @@ django-filter = "^22.1"
 mysqlclient = "^2.1.1"
 drf-spectacular-sidecar = "^2022.10.1"
 celery = "^5.2.7"
+redis = "^4.3.4"
+ipython = "^8.6.0"
 
 
-[tool.poetry.group.dev.dependencies]
+[tool.poetry.dev-dependencies]
 pylint-django = "^2.5.3"
 
 [build-system]
