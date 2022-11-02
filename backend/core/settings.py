@@ -10,12 +10,20 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+
 import os
 from pathlib import Path
+import environ
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -101,14 +109,21 @@ WSGI_APPLICATION = "core.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
+        "NAME": os.environ.get("DATABASE_NAME"),
+        "USER": os.environ.get("DATABASE_USER", "root"),
+        "PASSWORD": os.environ.get("DATABASE_PASSWORD", "MYSQL_ROOT_PASSWORD"),
         "HOST": os.environ.get("DATABASE_HOST", "127.0.0.1"),
         "PORT": os.environ.get("DATABASE_PORT", "3306"),
+    },
+    "test": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.environ.get("DATABASE_NAME"),
         "USER": os.environ.get("DATABASE_USER", "root"),
         "PASSWORD": os.environ.get("DATABASE_PASSWORD", "MYSQL_ROOT_PASSWORD"),
         "NAME": os.environ.get("DATABASE_NAME", "sample"),
     }
 }
-
+DATABASES["default"] = DATABASES[env("DATABASE_SELECTOR")]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -206,3 +221,11 @@ SPECTACULAR_SETTINGS = {
     "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
     "REDOC_DIST": "SIDECAR",
 }
+
+# Celery settings
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
+
+REDIS_HOST = "redis" # Container name in docker-compose.yml
+REDIS_PORT = "6379"
+
+CELERY_BROKER_URL = os.environ.get('REDIS_URL', "redis://{host}:{port}/0".format(host=REDIS_HOST, port=REDIS_PORT))
