@@ -1,6 +1,6 @@
 # sudo rm -f /etc/nginx/sites-enabled/default
 # sudo rm -f /etc/nginx/sites-enabled/www.booking.asmo.su
-# sudo cp -f .asmo/nginx_asmo_su/www.booking.asmo.su /etc/nginx/sites-available/www.booking.asmo.su
+# sudo cp -f .docker-config/nginx/www.booking.asmo.su /etc/nginx/sites-available/www.booking.asmo.su
 # sudo ln -s /etc/nginx/sites-available/www.booking.asmo.su /etc/nginx/sites-enabled/www.booking.asmo.su
 # sudo nginx -t && sudo nginx -s reload
 # cd /etc/nginx/sites-available/
