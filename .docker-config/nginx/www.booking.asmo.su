@@ -1,0 +1,29 @@
+# sudo rm -f /etc/nginx/sites-enabled/default
+# sudo rm -f /etc/nginx/sites-enabled/www.booking.asmo.su
+# sudo cp -f .asmo/nginx_asmo_su/www.booking.asmo.su /etc/nginx/sites-available/www.booking.asmo.su
+# sudo ln -s /etc/nginx/sites-available/www.booking.asmo.su /etc/nginx/sites-enabled/www.booking.asmo.su
+# sudo nginx -t && sudo nginx -s reload
+# cd /etc/nginx/sites-available/
+
+upstream www-booking-asmo-su {
+    server localhost:8538 max_fails=5 fail_timeout=60s;
+}
+server {
+    gzip on;
+    gzip_disable "msie6";
+    gzip_min_length 1000;
+
+    server_name booking.asmo.su www.booking.asmo.su;
+    
+    # security
+    add_header Referrer-Policy "strict-origin";
+    add_header X-Content-Type-Options nosniff;
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-XSS-Protection "1; mode=block";
+    add_header Strict-Transport-Security 'max-age=31536000; includeSubDomains; preload';
+
+    location / {
+        proxy_pass http://www-booking-asmo-su/;
+        try_files $uri $uri/ /index.html;
+    }
+}
