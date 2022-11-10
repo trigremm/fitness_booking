@@ -1,5 +1,6 @@
 .env
 .env.backend
+.env.frontend
 .docker-storage
 *.pyc
 static/

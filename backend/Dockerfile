@@ -21,7 +21,7 @@ RUN apt update \
 
 # app setup
 WORKDIR /app
-COPY backend/poetry.lock backend/pyproject.toml ./
+COPY poetry.lock pyproject.toml ./
 
 # project dependencies
 RUN --mount=type=cache,target=/root/.cache pip install -U pip setuptools
@@ -38,7 +38,7 @@ RUN apt purge -y \
 EXPOSE 8000
 
 # copy main project 
-COPY backend/ . 
+COPY . . 
 
 # runtime
 CMD python manage.py migrate && python manage.py runserver 0.0.0.0:8000
