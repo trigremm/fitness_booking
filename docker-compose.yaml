@@ -39,6 +39,6 @@ services:
       context: ../fitness-frontend
       dockerfile: Dockerfile
     env_file:
-      - ../fitness-frontend/.env.frontend
+      - ../fitness-frontend/.env
     ports:
       - "3080:80"
