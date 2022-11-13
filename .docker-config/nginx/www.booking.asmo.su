@@ -1,9 +1,10 @@
 # sudo rm -f /etc/nginx/sites-enabled/default
-# sudo rm -f /etc/nginx/sites-enabled/www.booking.asmo.su
+# sudo rm -f /etc/nginx/sites-available/www.booking.asmo.su /etc/nginx/sites-enabled/www.booking.asmo.su
 # sudo cp -f .docker-config/nginx/www.booking.asmo.su /etc/nginx/sites-available/www.booking.asmo.su
 # sudo ln -s /etc/nginx/sites-available/www.booking.asmo.su /etc/nginx/sites-enabled/www.booking.asmo.su
+# ls /etc/nginx/sites*/
+# sudo certbot --nginx -d booking.asmo.su -d www.booking.asmo.su
 # sudo nginx -t && sudo nginx -s reload
-# cd /etc/nginx/sites-available/
 
 upstream www-booking-asmo-su {
     server localhost:8538 max_fails=5 fail_timeout=60s;

@@ -42,3 +42,4 @@ services:
       - ../fitness-frontend/.env
     ports:
       - "8538:80"
+      - "3080:80"
