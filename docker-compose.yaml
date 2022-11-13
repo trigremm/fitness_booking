@@ -33,3 +33,12 @@ services:
       - ./backend:/app/
       - ./.docker-storage/backend/static:/app/static/
       - ./.docker-storage/backend/media:/app/media/
+
+  frontend:
+    build:
+      context: ../fitness-frontend
+      dockerfile: Dockerfile
+    env_file:
+      - ../fitness-frontend/.env.frontend
+    ports:
+      - "3080:80"
